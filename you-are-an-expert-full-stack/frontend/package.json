@@ -1,0 +1,28 @@
+{
+  "name": "team-task-manager-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@tanstack/react-query": "^5.62.7",
+    "autoprefixer": "^10.5.0",
+    "axios": "^1.7.9",
+    "framer-motion": "^12.38.0",
+    "postcss": "^8.5.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.1.1",
+    "recharts": "^3.8.1",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4"
+  }
+}
