@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  preview: {
+    allowedHosts: ['content-strength-production-7826.up.railway.app'],
+  },
   build: {
     rollupOptions: {
       output: {
