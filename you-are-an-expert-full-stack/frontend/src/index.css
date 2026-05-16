@@ -22,6 +22,7 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; background: var(--color-bg); }
+body.nav-open { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
@@ -54,6 +55,7 @@ button { cursor: pointer; }
   background: var(--color-surface);
   color: var(--color-text-muted);
 }
+.mobile-topbar, .mobile-overlay, .mobile-close { display: none; }
 
 .landing {
   min-height: 100vh;
@@ -522,24 +524,132 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-primary); 
 @keyframes barGrow { from { transform: scaleY(.2); opacity: .5; } to { transform: scaleY(1); opacity: 1; } }
 
 @media (max-width: 900px) {
-  .app-shell { display: block; }
-  .sidebar {
-    position: sticky;
-    z-index: 30;
-    width: 100%;
-    height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--color-border);
+  .app-shell {
+    display: block;
+    min-height: 100vh;
+    padding-top: 76px;
   }
-  .sidebar.collapsed { width: 100%; }
-  .sidebar.collapsed .sidebar-link span, .sidebar.collapsed .brand-copy, .sidebar.collapsed .mini-user div { display: block; }
-  .sidebar-nav { grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); }
-  .sidebar-link { justify-content: center; padding: 0 8px; }
-  .sidebar-footer { position: static; margin-top: 12px; grid-template-columns: 1fr auto; }
+  .mobile-topbar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 76px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, .94);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 10px 28px rgba(17, 24, 39, .05);
+  }
+  .mobile-topbar div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .mobile-topbar strong {
+    color: var(--color-text);
+    font-size: 17px;
+    line-height: 1.1;
+  }
+  .mobile-topbar span {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .mobile-menu-button {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow);
+  }
+  .mobile-menu-button span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-text-muted);
+  }
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: block;
+    border: 0;
+    background: rgba(17, 24, 39, .42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+  .mobile-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sidebar {
+    position: fixed;
+    z-index: 60;
+    top: 0;
+    left: 0;
+    width: min(82vw, 330px);
+    height: 100dvh;
+    padding: 24px 18px;
+    border-right: 1px solid var(--color-border);
+    border-bottom: 0;
+    background: rgba(255, 255, 255, .98);
+    box-shadow: none;
+    transform: translateX(-105%);
+    transition: transform .24s ease, box-shadow .24s ease;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 24px 0 70px rgba(17, 24, 39, .22);
+  }
+  .sidebar.collapsed { width: min(82vw, 330px); }
+  .sidebar.collapsed .sidebar-link span,
+  .sidebar.collapsed .brand-copy,
+  .sidebar.collapsed .mini-user div { display: grid; }
+  .sidebar.collapsed .sidebar-top { justify-content: flex-start; flex-wrap: nowrap; }
+  .sidebar-top {
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  .desktop-collapse { display: none; }
+  .mobile-close {
+    display: inline-flex;
+    margin-left: auto;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .sidebar-nav {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .sidebar-link {
+    justify-content: flex-start;
+    min-height: 52px;
+    padding: 0 14px;
+    font-size: 16px;
+  }
+  .sidebar-footer {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+  }
+  .app-main {
+    min-height: calc(100vh - 76px);
+  }
   .kanban-board, .preview-section, .analytics-grid, .settings-grid { grid-template-columns: 1fr; }
   .kanban-column { min-height: auto; }
-  .page { padding: 24px 16px; }
+  .page { padding: 28px 18px 40px; }
   .page-head { flex-direction: column; }
+  .section-head { flex-direction: column; }
   .card-a, .card-b { display: none; }
   .hero-polished {
     grid-template-columns: 1fr;
@@ -552,13 +662,59 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-primary); 
 }
 
 @media (max-width: 620px) {
+  .app-shell { padding-top: 70px; }
+  .mobile-topbar {
+    height: 70px;
+    padding: 0 14px;
+  }
+  .mobile-menu-button {
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+    border-radius: 14px;
+  }
+  .sidebar {
+    width: min(86vw, 315px);
+    padding: 22px 16px;
+  }
+  .sidebar.collapsed { width: min(86vw, 315px); }
+  .sidebar-link {
+    min-height: 50px;
+    font-size: 15px;
+  }
+  .sidebar-footer {
+    left: 16px;
+    right: 16px;
+  }
   .landing-nav { padding: 0 16px; }
   .landing-nav .btn.ghost { display: none; }
   .hero p { font-size: 18px; }
+  .hero-copy h1 { font-size: 40px; }
+  .hero-copy p { font-size: 18px; }
+  .hero-actions .btn { width: 100%; }
+  .page { padding: 22px 14px 34px; }
   .page h1 { font-size: 28px; }
+  .page-head, .section-head { gap: 12px; margin-bottom: 18px; }
+  .page-head .btn,
+  .page > .mb-7 .btn { width: 100%; }
+  .panel,
+  .stat-card,
+  .feature-card,
+  .project-card,
+  .preview-card,
+  .rounded-app {
+    border-radius: var(--radius);
+  }
+  .panel { padding: 16px; margin-top: 16px; }
+  .stat-card { padding: 18px; }
   .stat-card strong { font-size: 30px; }
+  .project-card { min-height: 150px; padding: 16px; }
+  .kanban-board { gap: 12px; }
+  .kanban-column { padding: 10px; }
+  .modal-panel { padding: 18px; }
+  .analytics-grid section,
+  .settings-grid section { min-width: 0; }
   .task-meta, .detail-grid, .form-row { grid-template-columns: 1fr; }
-  .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .project-meta, .progress-item > div:first-child { flex-direction: column; }
   .preview-metrics, .preview-bottom-grid, .preview-kanban { grid-template-columns: 1fr; }
   .product-preview { border-radius: var(--radius); }

@@ -26,7 +26,7 @@ function Icon({ name }) {
   return <svg {...common}>{paths[name]}</svg>;
 }
 
-export default function Sidebar() {
+export default function Sidebar({ mobileOpen = false, onMobileClose = () => {} }) {
   const [collapsed, setCollapsed] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -34,24 +34,28 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     logout();
+    onMobileClose();
     navigate('/');
   };
 
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''} shadow-[8px_0_28px_rgba(17,24,39,0.03)]`}>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''} shadow-[8px_0_28px_rgba(17,24,39,0.03)]`}>
       <div className="sidebar-top">
         <div className="brand-mark shadow-sm">TF</div>
         <div className="brand-copy">
           <strong>TaskFlow</strong>
           <span>Team workspace</span>
         </div>
-        <button className="icon-btn" onClick={() => setCollapsed((value) => !value)} aria-label="Toggle sidebar">
+        <button className="icon-btn desktop-collapse" onClick={() => setCollapsed((value) => !value)} aria-label="Toggle sidebar">
           <Icon name="menu" />
+        </button>
+        <button className="icon-btn mobile-close" onClick={onMobileClose} aria-label="Close navigation">
+          <span aria-hidden="true">x</span>
         </button>
       </div>
       <nav className="sidebar-nav">
         {items.map((item) => (
-          <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''} group`}>
+          <NavLink key={item.to} to={item.to} onClick={onMobileClose} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''} group`}>
             <Icon name={item.icon} />
             <span>{item.label}</span>
           </NavLink>
